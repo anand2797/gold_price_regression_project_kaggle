@@ -5,4 +5,5 @@ seaborn
 mysql-connector
 python-dotenv
 scikit-learn
--e .
+statsmodels
+# -e .
