@@ -2,10 +2,12 @@ import os
 import sys
 from src.logger import logging
 from src.exception import CustomException
+from src.utils import read_from_mysql
 
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from dataclasses import dataclass
+
 
 @dataclass
 class DataIngestionConfig:
@@ -20,7 +22,8 @@ class DataIngestion:
     def initiate_data_ingestion(self):
         logging.info('>>> Entered the initiate data ingestion method... <<<')
         try:
-            df = pd.read_csv('notebooks/data/cleaned_data.csv')
+           # df = pd.read_csv('notebooks/data/cleaned_data.csv')
+            df = read_from_mysql() # this reads data from mysql database table 
             logging.info('REad the dataset as dataframe...')
             
             data_ingestion_dir_name = os.path.dirname(self.data_ingestion_config.train_data_path) # dir name
@@ -48,4 +51,5 @@ class DataIngestion:
 if __name__ == "__main__":
     obj = DataIngestion(data_ingestion_config=DataIngestionConfig())
     obj.initiate_data_ingestion()
+
 """
