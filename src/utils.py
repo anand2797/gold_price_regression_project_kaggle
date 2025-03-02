@@ -28,12 +28,14 @@ def read_from_mysql():
 
         df = pd.DataFrame(data, columns=columns)  # Create DataFrame
 
-        cursor.close()
-        conn.close()
+        
         logging.info("Data successfully fetched from MySQL.")
         return df
     except Exception as e:
         raise CustomException(e, sys)
+    finally:
+        cursor.close()
+        conn.close()
 """
 def read_from_mongodb():
     # Reads data from MongoDB Atlas and returns a DataFrame.
