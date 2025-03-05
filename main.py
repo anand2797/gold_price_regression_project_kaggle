@@ -5,6 +5,7 @@ from src.exception import CustomException
 
 from src.components.data_ingestion import DataIngestion, DataIngestionConfig
 from src.components.data_transformation import DataTransformation, DataTransformationConfig
+from src.components.model_trainer import ModelTrainer
 
 
 if __name__ == "__main__":
@@ -26,3 +27,8 @@ if __name__ == "__main__":
     y_test = transformed_data["y_test"]
     preprocessor = transformed_data["preprocessor"]
     logging.info(">>>> Data Transformation Completed...<<<<")
+
+    model_trainer = ModelTrainer()
+    logging.info(">>>> Model Training is started....<<<<")
+    model_trainer.initiate_model_trainer(X_train, y_train, X_test, y_test)
+    logging.info(">>>> Model Training is completed....<<<<")

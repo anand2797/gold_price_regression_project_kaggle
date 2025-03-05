@@ -6,4 +6,5 @@ mysql-connector
 python-dotenv
 scikit-learn
 statsmodels
+pyyaml
 # -e .
