@@ -29,15 +29,15 @@ class DataIngestion:
             data_ingestion_dir_name = os.path.dirname(self.data_ingestion_config.train_data_path) # dir name
             os.makedirs(data_ingestion_dir_name, exist_ok=True) # make dir as 'artifacts/data_ingestion'
 
-            df.to_csv(self.data_ingestion_config.raw_data_path, index=False, header=None) # save raw data
+            df.to_csv(self.data_ingestion_config.raw_data_path, index=False) # save raw data
 
             logging.info("Train test split initiated: ")
             train_set, test_set = train_test_split(df, test_size=0.2, random_state=42)
 
             # save train data in csv
-            train_set.to_csv(self.data_ingestion_config.train_data_path, index=False, header = None)
+            train_set.to_csv(self.data_ingestion_config.train_data_path, index=False)
             # save test data in csv
-            test_set.to_csv(self.data_ingestion_config.test_data_path, index = False, header = None)
+            test_set.to_csv(self.data_ingestion_config.test_data_path, index = False)
 
             logging.info(">>> Data Ingestion is Completed... <<<")
 
@@ -51,5 +51,4 @@ class DataIngestion:
 if __name__ == "__main__":
     obj = DataIngestion(data_ingestion_config=DataIngestionConfig())
     obj.initiate_data_ingestion()
-
 """

@@ -7,6 +7,9 @@ import sys
 from dotenv import load_dotenv
 import os
 
+import pickle
+import joblib
+
 load_dotenv()
 
 def read_from_mysql():
@@ -53,3 +56,31 @@ def read_from_mongodb():
     except Exception as e:
         raise CustomException(e, sys)
 """
+
+def save_object(file_path, obj, use_joblib=False):
+    """
+    Saves an object to a file using pickle or joblib.
+
+    Parameters:
+    file_path (str): The path where the object should be saved.
+    obj (any): The object to save.
+    use_joblib (bool): If True, saves using joblib. Otherwise, uses pickle.
+    
+    Returns:
+    None
+    """
+    try:
+        # Ensure the directory exists
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        
+        if use_joblib:
+            joblib.dump(obj, file_path)  # Save using joblib
+            logging.info(f"Object successfully saved using joblib at: {file_path}")
+        else:
+            with open(file_path, 'wb') as file:
+                pickle.dump(obj, file)  # Save using pickle
+            logging.info(f"Object successfully saved using pickle at: {file_path}")
+
+    except Exception as e:
+        raise CustomException(e, sys)
+
