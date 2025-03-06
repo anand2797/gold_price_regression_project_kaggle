@@ -72,28 +72,35 @@ class ModelTrainer:
             with open(yaml_filepath, "w") as file:
                 yaml.dump({}, file)
 
-            results_dict = {} # for each model metrics
+            results_dict = {"Train Performance":{}, "Test Performance":{}} # for each model metrics
 
             for name, (model, param_grid) in models.items():
                 # Step 1: Perform Grid Search
                 best_estimator, params = self.perform_gridsearch(train_transformed, y_train, model, param_grid)
 
-                # Step 2: Evaluate Best Estimator
-                mse, mae, r2 = self.evaluate_model_performance(test_transformed, y_test, best_estimator)
+                # Step :2.1 Evaluate Best Estimator for train data
+                logging.info("..***...---------...***..")
+                train_mse, train_mae, train_r2 = self.evaluate_model_performance(train_transformed, y_train, best_estimator)
+                logging.info(f"Train Performance-->> {name}: MSE={train_mse}, MAE={train_mae}, R²={train_r2}")
 
-                logging.info(f"{name}: MSE={mse}, MAE={mae}, R²={r2}")
+                # Step 2.2: Evaluate Best Estimator for test data
+                test_mse, test_mae, test_r2 = self.evaluate_model_performance(test_transformed, y_test, best_estimator)
+                logging.info(f"Test Performance-->> {name}: MSE={test_mse}, MAE={test_mae}, R²={test_r2}")
+                logging.info("..***...---------...***..")
+                
+                results_dict["Train Performance"].update({name: {"MSE": train_mse, "MAE": train_mae, "R²": train_r2}})
+                results_dict["Test Performance"].update({name: {"MSE": test_mse, "MAE": test_mae, "R²": test_r2}})
                 # **Write new results to YAML file**
-                results_dict[name] = {"MSE": mse, "MAE": mae, "R²": r2}
-
                 with open(yaml_filepath, "w") as file:
                     yaml.dump(results_dict, file, default_flow_style=False)
 
                 # Step 3: Select Best Model
-                if r2 > best_score:
-                    best_model, best_score, best_name, best_params = best_estimator, r2, name, params
-
+                if test_r2 > best_score:
+                    best_model, best_score, best_name, best_params = best_estimator, test_r2, name, params
+            logging.info("..***...---------...***..")
             logging.info(f"Best Model: {best_name} (R²={best_score:.4f}) | Params: {best_params}")
-
+            logging.info("..***...---------...***..")
+            
             # Step 4: Save Best Model
             save_object(self.model_trainer_config.model_filepath, best_model)
 
