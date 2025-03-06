@@ -65,8 +65,8 @@ class ModelTrainer:
 
             
             # yaml file for put metics of all estimator
-            yaml_filepath = "logs/model_results.yaml"
-            os.makedirs(os.path.dirname(yaml_filepath), exist_ok=True)
+            yaml_filepath = "model_performance_results.yaml"
+            # os.makedirs(os.path.dirname(yaml_filepath), exist_ok=True)
 
             # Clear YAML file before writing new results**
             with open(yaml_filepath, "w") as file:
