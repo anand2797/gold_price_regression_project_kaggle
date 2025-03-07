@@ -2,7 +2,7 @@ import os
 import sys
 from src.logger import logging
 from src.exception import CustomException
-from src.utils import save_object
+from src.utils import save_object, evaluate_model_performance
 import yaml
 
 from dataclasses import dataclass
@@ -23,18 +23,7 @@ class ModelTrainerConfig:
 class ModelTrainer:
     def __init__(self):
         self.model_trainer_config = ModelTrainerConfig()
-    
-    def evaluate_model_performance(self, test_data, test_target, best_estimator):
-        try:
-            y_pred = best_estimator.predict(test_data)
-            mse = mean_squared_error(y_true=test_target, y_pred=y_pred)
-            mae = mean_absolute_error(y_true=test_target, y_pred=y_pred)
-            r2 = r2_score(y_true=test_target, y_pred=y_pred)
-
-            return mse, mae,r2
-        except Exception as e:
-            raise CustomException(e, sys)
-        
+       
     def perform_gridsearch(self, train_data, train_target, model, param_grid):
         try:
             
@@ -66,8 +55,6 @@ class ModelTrainer:
             
             # yaml file for put metics of all estimator
             yaml_filepath = "model_performance_results.yaml"
-            # os.makedirs(os.path.dirname(yaml_filepath), exist_ok=True)
-
             # Clear YAML file before writing new results**
             with open(yaml_filepath, "w") as file:
                 yaml.dump({}, file)
@@ -80,17 +67,17 @@ class ModelTrainer:
 
                 # Step :2.1 Evaluate Best Estimator for train data
                 logging.info("..***...---------...***..")
-                train_mse, train_mae, train_r2 = self.evaluate_model_performance(train_transformed, y_train, best_estimator)
+                train_mse, train_mae, train_r2 = evaluate_model_performance(train_transformed, y_train, best_estimator)
                 logging.info(f"Train Performance-->> {name}: MSE={train_mse}, MAE={train_mae}, R²={train_r2}")
 
                 # Step 2.2: Evaluate Best Estimator for test data
-                test_mse, test_mae, test_r2 = self.evaluate_model_performance(test_transformed, y_test, best_estimator)
+                test_mse, test_mae, test_r2 = evaluate_model_performance(test_transformed, y_test, best_estimator)
                 logging.info(f"Test Performance-->> {name}: MSE={test_mse}, MAE={test_mae}, R²={test_r2}")
                 logging.info("..***...---------...***..")
                 
                 results_dict["Train Performance"].update({name: {"MSE": train_mse, "MAE": train_mae, "R²": train_r2}})
                 results_dict["Test Performance"].update({name: {"MSE": test_mse, "MAE": test_mae, "R²": test_r2}})
-                # **Write new results to YAML file**
+                # Write new results to YAML file
                 with open(yaml_filepath, "w") as file:
                     yaml.dump(results_dict, file, default_flow_style=False)
 

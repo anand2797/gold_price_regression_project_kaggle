@@ -7,4 +7,5 @@ python-dotenv
 scikit-learn
 statsmodels
 pyyaml
+flask
 # -e .
