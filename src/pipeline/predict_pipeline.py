@@ -1,7 +1,8 @@
 import os 
 import sys
-from src.logger import logging
+#from src.logger import logging
 from src.exception import CustomException
+from src.utils_aws import fetch_model_from_s3
 from src.utils import load_object
 
 import pandas as pd
@@ -11,13 +12,15 @@ class PredictPipeline:
     def __init__(self):
         pass
 
-    def predict(self, features):
+    def predicts(self, features):
         try:
-            model_path = 'artifacts/model_trainer/model.pkl'
-            preprocessor_path = 'artifacts/data_transformation/preprocessor.pkl'
+            #model_path = 'artifacts/model_trainer/model.pkl'
+            #preprocessor_path = 'artifacts/data_transformation/preprocessor.pkl'
 
-            model = load_object(file_path=model_path)
-            preprocessor = load_object(file_path=preprocessor_path)
+            #model = load_object(file_path=model_path)
+            #preprocessor = load_object(file_path=preprocessor_path)
+            model = fetch_model_from_s3(model_name='model.pkl', local_path='model.pkl')
+            preprocessor = fetch_model_from_s3(model_name='preprocessor.pkl', local_path='preprocessor.pkl')
             # transform the input data by using preprocessor
             transformed_data = preprocessor.transform(features)
             # predict the output by passing transformed data to model

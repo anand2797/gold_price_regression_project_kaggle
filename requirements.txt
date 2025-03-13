@@ -8,4 +8,5 @@ scikit-learn
 statsmodels
 pyyaml
 flask
+boto3
 # -e .

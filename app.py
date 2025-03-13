@@ -8,6 +8,7 @@ import sys
 import pickle
 
 app = Flask(__name__)
+app.config["DEBUG"] = True  # Enables error output in terminal
 
 # route for homepage
 @app.route('/')
@@ -26,10 +27,10 @@ def predict():
             custom_data = CustomData(**data)  
 
             input_df =  custom_data.get_data_as_dataframe()
-            print(input_df)
+            #print(input_df)
 
             predict_pipeline = PredictPipeline()
-            prediction = predict_pipeline.predict(input_df)
+            prediction = predict_pipeline.predicts(input_df)
             output = prediction[0]
 
             # Return JSON response for Postman
@@ -44,5 +45,5 @@ def predict():
     
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0")
+    app.run( host="0.0.0.0", debug=True)
 
